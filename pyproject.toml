@@ -10,7 +10,7 @@ homepage = "https://github.com/mihaiush/timona"
 python = "^3.7"
 
 [tool.poetry.scripts]
-timona = "timona:main:main"
+timona = "timona.main:main"
 
 [tool.poetry-dynamic-versioning]
 enable = true
