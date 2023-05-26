@@ -17,12 +17,11 @@ class Template():
             )
             v = p.stdout.strip()
             v = 'command: {}'.format(v)
-            self.stderr = config['command'].get("stderr")
+            self.stderr = config['command'].get('stderr')
         self.version = v
-        if 'regex' in config:
-            self.var_re = re.compile(config['regex'])
-        else:
-            self.var_re = None
+        self.var_re = config.get('regex')
+        if self.var_re:
+            self.var_re = re.compile(self.var_re)
 
     def render(self, tpl, env):
         if self.cmd:
