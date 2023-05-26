@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "timona"
+version = "0.0.0"
+description = "Tool to automate Helm deployments"
+authors = ["mihaiush <mihaiush@gmail.com>"]
+readme = "README.md"
+homepage = "https://github.com/mihaiush/timona"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.scripts]
+timona = "timona:main:main"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
