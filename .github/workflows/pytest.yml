@@ -20,6 +20,6 @@ jobs:
         pip install pytest
         wget -O - https://raw.githubusercontent.com/jirutka/esh/master/esh >/usr/local/bin/esh
         chmod +x /usr/local/bin/esh
-    - name: Analysing the code with pylint
+    - name: Run tests
       run: |
-        pythom -m pytest -v
+        python -m pytest -v
