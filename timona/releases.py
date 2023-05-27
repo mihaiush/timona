@@ -27,19 +27,28 @@ def flatten_matrix(matrix):
 
 
 # Count the variables in a release
-def count_vars(data, var_re):
+def count_vars(data, tpl):
     c = 0
     for var_name, var_value in data.items():
         if var_name != '__count__':
-            if var_re:
-                c = c + len(var_re.findall(var_value))
+            if tpl.var_re:
+                c = c + len(tpl.var_re.findall(var_value))
             else:
                 for k in data.keys():
                     c = c + var_value.count(k)
+    if c == 0 and not tpl.var_re:
+        for var_name, var_value in data.items():
+            if var_name != '__count__':
+                try:
+                    tpl.render(var_value, {})
+                except Exception:
+                    c = 999
+                    break
     return c
 
 
 def solve_vars(in_data, out_data, tpl):
+    in_data['__count__'] = count_vars(in_data, tpl)
     while in_data['__count__'] > 0:
         tmp_data = {'__count__': 0}
         c = in_data['__count__']
@@ -51,13 +60,14 @@ def solve_vars(in_data, out_data, tpl):
             except Exception as e:
                 err = e
                 tmp_data[var_name] = var_value
-        tmp_data['__count__'] = count_vars(tmp_data, tpl.var_re)
+        tmp_data['__count__'] = count_vars(tmp_data, tpl)
         if c == tmp_data['__count__']:
             out_data['e']['last'] = in_data
             out_data['e']['err'] = err
+            out_data['e']['count'] = c
             return
         in_data = tmp_data
-    out_data['d'] = {**in_data}
+    out_data['d'] = dict(in_data)
 
 
 def get_releases(tpl, tmp, config):
@@ -83,13 +93,6 @@ def get_releases(tpl, tmp, config):
                         out.append({**release_template, **release_matrix})
             else:
                 out.append(release_template)
-
-        # Add __count__
-        _releases = []
-        for release in out:
-            c = {'__count__': count_vars(release, tpl.var_re)}
-            _releases.append({**release, **c})
-        out = _releases
 
         # Solve vars, each release in a thread
         _releases = []

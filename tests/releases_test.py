@@ -18,18 +18,32 @@ def test_flatten_matrix():
         'ALPHA': ['a', 'b'],
         'BETA': 'c'
     }
-    assert releases.flatten_matrix(data) == \
-        [{'ALPHA': 'a', 'BETA': 'c'}, {'ALPHA': 'b', 'BETA': 'c'}]
+    assert releases.flatten_matrix(data) == [
+        {'ALPHA': 'a', 'BETA': 'c'},
+        {'ALPHA': 'b', 'BETA': 'c'}
+    ]
 
 
-def test_count_vars():
+def test_count_vars_simple():
     data = {
         'ALPHA': 'a',
         'BETA': '{{ ALPHA }}-{{ GAMMA }}',
         'GAMMA': 'b-{{ DELTA }}',
         'DELTA': 'x'
     }
-    assert releases.count_vars(data, Template().var_re) == 3
+    t = Template()
+    assert releases.count_vars(data, t) == 3
+    t.var_re = None
+    assert releases.count_vars(data, t) == 3
+
+
+def test_count_vars_err():
+    data = {
+        'BETA': 'x-{{ GAMMA }}-{{ DELTA }}'
+    }
+    t = Template()
+    t.var_re = None
+    assert releases.count_vars(data, t) == 999
 
 
 def test_solve_vars_ok():
@@ -39,20 +53,19 @@ def test_solve_vars_ok():
         'GAMMA': 'b-{{ DELTA }}',
         'DELTA': 'x'
     }
-    in_data['__count__'] = releases.count_vars(in_data, Template().var_re)
+    in_data['__count__'] = releases.count_vars(in_data, Template())
     out_data = {'d': {}, 'e': {}}
     releases.solve_vars(in_data, out_data, Template())
-    assert out_data == \
-        {
-            'd': {
-                'ALPHA': 'a',
-                'BETA': 'a-b-x',
-                'DELTA': 'x',
-                'GAMMA': 'b-x',
-                '__count__': 0
-            },
-            'e': {}
-        }
+    assert out_data == {
+        'd': {
+            'ALPHA': 'a',
+            'BETA': 'a-b-x',
+            'DELTA': 'x',
+            'GAMMA': 'b-x',
+            '__count__': 0
+        },
+        'e': {}
+    }
 
 
 def test_solve_vars_err():
@@ -62,9 +75,10 @@ def test_solve_vars_err():
         'GAMMA': 'b-{{ DELTA }}',
         'DELTA': 'x'
     }
-    in_data['__count__'] = releases.count_vars(in_data, Template().var_re)
+    t = Template()
+    in_data['__count__'] = releases.count_vars(in_data, t)
     out_data = {'d': {}, 'e': {}}
-    releases.solve_vars(in_data, out_data, Template())
+    releases.solve_vars(in_data, out_data, t)
     assert ('err' in out_data['e']) and \
         (type(out_data['e']['err']) is jinja2.exceptions.UndefinedError)
 
