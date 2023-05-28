@@ -11,6 +11,7 @@ python = "^3.7"
 pyyaml = "*"
 requests = "*"
 jinja2 = "*"
+deepmerge = "*"
 
 [tool.poetry.scripts]
 timona = "timona.main:main"
