@@ -8,6 +8,9 @@ homepage = "https://github.com/mihaiush/timona"
 
 [tool.poetry.dependencies]
 python = "^3.7"
+pyyaml = "*"
+requests = "*"
+jinja2 = "*"
 
 [tool.poetry.scripts]
 timona = "timona.main:main"

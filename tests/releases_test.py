@@ -1,4 +1,5 @@
 from timona import releases
+import pytest
 import jinja2
 import os
 import re
@@ -129,7 +130,8 @@ def test_get_releases_loop():
             }
         }
     }
-    assert releases.get_releases(Template(), '/tmp', config) is None
+    with pytest.raises(RuntimeError, match='Loop or template error'):
+        releases.get_releases(Template(), '/tmp', config)
 
 
 def test_get_releases_err():
@@ -145,4 +147,25 @@ def test_get_releases_err():
             }
         }
     }
-    assert releases.get_releases(Template(), '/tmp', config) is None
+    with pytest.raises(RuntimeError, match='Loop or template error'):
+        releases.get_releases(Template(), '/tmp', config)
+
+
+def test_get_releases_duplicate():
+    with suppress(Exception):
+        os.remove('/tmp/releases.test.yaml')
+    config = {
+        '.hash': 'test',
+        'releases': {
+            'foo-{{ BAR }}': {
+                'matrix': [{
+                    'BAR': [
+                        'alpha',
+                        'alpha'
+                    ]
+                }]
+            }
+        }
+    }
+    with pytest.raises(RuntimeError, match='Duplicate'):
+        releases.get_releases(Template(), '/tmp', config)

@@ -3,7 +3,7 @@
 import yaml
 from threading import Thread
 import subprocess
-from pprint import pprint
+from pprint import pformat
 import os
 import itertools
 
@@ -116,13 +116,15 @@ def get_releases(tpl, tmp, config):
             if len(x['r']['e']) == 0:
                 _releases.append(x['r']['d'])
             else:
-                print('Loop or template error')
-                print('Latest data:')
-                pprint(x['r']['e']['last'])
-                print('Error: {}'.format(x['r']['e']['err']))
+                msg = ''
+                msg = msg + 'Loop or template error\n'
+                msg = msg + 'Latest data:\n'
+                msg = msg + pformat(x['r']['e']['last']) + '\n'
+                msg = msg + 'Error: {}\n'.format(x['r']['e']['err'])
                 if type(x['r']['e']['err']) is subprocess.CalledProcessError:
-                    print('  stderr: {}'.format(x['r']['e']['err'].stderr))
-                return None
+                    msg = msg + '  stderr: {}'.format(
+                        x['r']['e']['err'].stderr)
+                raise RuntimeError(msg)
         out = _releases
 
         # Cleanup variables staring with _
@@ -140,8 +142,8 @@ def get_releases(tpl, tmp, config):
                 _releases[n] = release
             else:
                 raise RuntimeError(
-                    'Duplicate release name: {}\n{}\n{}'
-                    .format(n, _releases[n], release)
+                    'Duplicate release name: {}\n{}\n{}'.format(
+                        n, _releases[n], release)
                 )
         out = _releases
 
