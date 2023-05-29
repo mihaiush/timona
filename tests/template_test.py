@@ -30,7 +30,7 @@ def test_template_render():
 
 def test_template_render_error():
     t = template.Template(CONFIG)
-    with pytest.raises(subprocess.CalledProcessError):
+    with pytest.raises(subprocess.SubprocessError):
         t.render('<% false %>', {})
 
 

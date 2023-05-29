@@ -2,7 +2,6 @@
 
 import yaml
 from threading import Thread
-import subprocess
 from pprint import pformat
 import os
 import itertools
@@ -121,9 +120,6 @@ def get_releases(tpl, tmp, config):
                 msg = msg + 'Latest data:\n'
                 msg = msg + pformat(x['r']['e']['last']) + '\n'
                 msg = msg + 'Error: {}\n'.format(x['r']['e']['err'])
-                if type(x['r']['e']['err']) is subprocess.CalledProcessError:
-                    msg = msg + '  stderr: {}'.format(
-                        x['r']['e']['err'].stderr)
                 raise RuntimeError(msg)
         out = _releases
 

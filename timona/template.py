@@ -25,11 +25,14 @@ class Template():
 
     def render(self, tpl, env):
         if self.cmd:
-            p = subprocess.run(
-                shlex.split(self.cmd),
-                input=tpl, env={**env, **os.environ},
-                capture_output=True, check=True, text=True,
-            )
+            try:
+                p = subprocess.run(
+                    shlex.split(self.cmd),
+                    input=tpl, env={**env, **os.environ},
+                    capture_output=True, check=True, text=True,
+                )
+            except subprocess.CalledProcessError as e:
+                raise subprocess.SubprocessError(e.stderr) from e
             if p.stderr.strip():
                 if self.stderr == 'print':
                     print(p.stderr, file=sys.stderr)
