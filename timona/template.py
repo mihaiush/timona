@@ -37,5 +37,7 @@ class Template():
                 if self.stderr == 'print':
                     print(p.stderr, file=sys.stderr)
                 elif self.stderr == 'error':
-                    raise subprocess.SubprocessError('Render error:\n{}'.format(p.stderr))
+                    raise subprocess.SubprocessError(
+                        'Render error:\n{}'.format(p.stderr)
+                    )
             return p.stdout
