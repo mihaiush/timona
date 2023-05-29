@@ -54,5 +54,5 @@ def test_template_render_stderr_error():
     c = {**CONFIG}
     c['command']['stderr'] = 'error'
     t = template.Template(c)
-    with pytest.raises(RuntimeError, match='Render error'):
+    with pytest.raises(subprocess.SubprocessError, match='Render error'):
         t.render('<% sh -c "echo foo >&2" %>', {})
