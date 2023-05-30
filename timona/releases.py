@@ -93,6 +93,15 @@ def get_releases(tpl, tmp, config):
             else:
                 out.append(release_template)
 
+        # Remove empty vars
+        for release in out: 
+            to_del = []
+            for var_name, var_value in release.items():
+                if not var_value:
+                    to_del.append(var_name)
+            for var_name in to_del:
+                del(release[var_name])
+
         # Solve vars, each release in a thread
         _releases = []
         threads = []
