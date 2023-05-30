@@ -6,6 +6,7 @@ import re
 import importlib
 import requests
 
+
 class Template():
 
     def __init__(self, config, tmp):
@@ -13,19 +14,23 @@ class Template():
         self.cmd = None
         self.module = None
         if 'module' in config:
-            if not config['module'].endswith('.py'):
-                self.module = importlib.import_module('timona.template.module_{}'.format(config['module']))
+            module = config['module']
+            if not module.endswith('.py'):
+                self.module = importlib.import_module(
+                    'timona.template.module_{}'.format(module)
+                )
             else:
                 sys.path = [tmp] + sys.path
-                if config['module'].startswith('http://') or config['module'].startswith('https://'):
-                    r = requests.get(config['module'], timeout=(0.5, 5))
+                if module.startswith('http://') or \
+                        module.startswith('https://'):
+                    r = requests.get(module, timeout=(0.5, 5))
                     r.raise_for_status()
-                    module = r.text
+                    m = r.text
                 else:
-                    with open(config['module']) as f:
-                        module = f.read()
-                with open ('{}/module_template.py'.format(tmp), 'w') as f:
-                    f.write(module)
+                    with open(module) as f:
+                        m = f.read()
+                with open('{}/module_template.py'.format(tmp), 'w') as f:
+                    f.write(m)
                 self.module = importlib.import_module('module_template')
             v = 'module: {}'.format(self.module.version)
         elif 'command' in config:

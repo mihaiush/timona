@@ -94,7 +94,7 @@ def get_releases(tpl, tmp, config):
                 out.append(release_template)
 
         # Remove empty vars
-        for release in out: 
+        for release in out:
             to_del = []
             for var_name, var_value in release.items():
                 if not var_value:
