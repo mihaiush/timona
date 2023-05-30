@@ -11,7 +11,8 @@ def load_config_file(c):
 
     def _load_config(c):
         if c.startswith('http://') or c.startswith('https://'):
-            r = requests.get(c)
+            r = requests.get(c, timeout=(0.5, 5))
+            r.raise_for_status()
             cfg = r.text
         else:
             with open(c) as f:

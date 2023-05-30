@@ -56,7 +56,7 @@ def main():
 
     TMP = '{}/.timona'.format(CONFIG['config']['tmp'])
     os.makedirs(TMP, exist_ok=True)
-    T = Template(CONFIG['config']['template'])
+    T = Template(CONFIG['config']['template'], TMP)
     H = Helm(CONFIG['config']['helm'], T, TMP)
 
     if CMD == 'version':

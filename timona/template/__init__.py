@@ -3,13 +3,32 @@ import shlex
 import os
 import sys
 import re
-
+import importlib
+import requests
 
 class Template():
 
-    def __init__(self, config):
+    def __init__(self, config, tmp):
+        self.tmp = tmp
         self.cmd = None
-        if 'command' in config:
+        self.module = None
+        if 'module' in config:
+            if not config['module'].endswith('.py'):
+                self.module = importlib.import_module('timona.template.module_{}'.format(config['module']))
+            else:
+                sys.path = [tmp] + sys.path
+                if config['module'].startswith('http://') or config['module'].startswith('https://'):
+                    r = requests.get(config['module'], timeout=(0.5, 5))
+                    r.raise_for_status()
+                    module = r.text
+                else:
+                    with open(config['module']) as f:
+                        module = f.read()
+                with open ('{}/module_template.py'.format(tmp), 'w') as f:
+                    f.write(module)
+                self.module = importlib.import_module('module_template')
+            v = 'module: {}'.format(self.module.version)
+        elif 'command' in config:
             self.cmd = config['command']['render']
             p = subprocess.run(
                 shlex.split(config['command']['version']),
@@ -24,7 +43,9 @@ class Template():
             self.var_re = re.compile(self.var_re)
 
     def render(self, tpl, env):
-        if self.cmd:
+        if self.module:
+            return self.module.render(tpl, env)
+        elif self.cmd:
             try:
                 p = subprocess.run(
                     shlex.split(self.cmd),
