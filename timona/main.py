@@ -67,8 +67,6 @@ def main():
         sys.exit()
 
     RELEASES = get_releases(T, TMP, CONFIG)
-    if not RELEASES:
-        sys.exit(1)
 
     if R and R not in RELEASES:
         raise RuntimeError('Unknown release: {}'.format(R))
