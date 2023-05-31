@@ -1,9 +1,6 @@
 name: pytest
 
-on:
-  push:
-    tags:
-      - '*'
+on: [push]
 
 jobs:
   build:
