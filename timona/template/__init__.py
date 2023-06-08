@@ -33,6 +33,7 @@ class Template():
                     f.write(m)
                 self.module = importlib.import_module('module_template')
             v = 'module: {}'.format(self.module.version)
+            var_re = self.module.regex
         elif 'command' in config:
             self.cmd = config['command']['render']
             p = subprocess.run(
@@ -42,8 +43,9 @@ class Template():
             v = p.stdout.strip()
             v = 'command: {}'.format(v)
             self.stderr = config['command'].get('stderr')
+            var_re = config['command'].get('regex')
         self.version = v
-        self.var_re = config.get('regex')
+        self.var_re = var_re
         if self.var_re:
             self.var_re = re.compile(self.var_re)
 

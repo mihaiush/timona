@@ -22,7 +22,7 @@ def test_template_init_simple():
 
 def test_template_init_regex():
     c = dict(CONFIG_CMD)
-    c['regex'] = r'\${?[a-zA-Z_][a-zA-Z0-9_]*}?'
+    c['command']['regex'] = r'\${?[a-zA-Z_][a-zA-Z0-9_]*}?'
     t = template.Template(c, '/tmp')
     assert type(t.var_re) is re.Pattern
 

@@ -1,6 +1,7 @@
 import jinja2
 
 version = 'jinja2 {}'.format(jinja2.__version__)
+regex = None
 
 
 def render(tpl, env):
