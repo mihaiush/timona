@@ -16,6 +16,7 @@ def usage():
     print("timona COMAND [RELEASE]")
     print()
     print("COMMANDS:")
+    print("  config           - dump config")
     print("  releases         - list releases")
     print("  env RELEASE      - show environment")
     print("  template RELEASE - render template")
@@ -34,6 +35,7 @@ def main():
         usage()
     CMD = sys.argv[1]
     valid_commands = [
+        'config',
         'releases',
         'env',
         'template',
@@ -47,12 +49,16 @@ def main():
     if CMD not in valid_commands:
         usage()
     R = None
-    if CMD != 'releases' and CMD != 'version':
+    if CMD not in ['config', 'releases', 'version']:
         if len(sys.argv) == 2:
             usage()
         R = sys.argv[2]
 
     CONFIG = load_config()
+
+    if CMD == 'config':
+        print(yaml.safe_dump(CONFIG))
+        sys.exit()
 
     TMP = '{}/.timona'.format(CONFIG['config']['tmp'])
     os.makedirs(TMP, exist_ok=True)
