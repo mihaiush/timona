@@ -51,7 +51,7 @@ class Template():
 
     def render(self, tpl, env):
         if self.module:
-            return self.module.render(tpl, env)
+            return self.module.render(tpl, {**env, **os.environ})
         elif self.cmd:
             try:
                 p = subprocess.run(
