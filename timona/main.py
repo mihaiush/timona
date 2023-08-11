@@ -77,9 +77,11 @@ def main():
     if R and R not in RELEASES:
         raise RuntimeError('Unknown release: {}'.format(R))
 
+    VALUES = T.render(CONFIG['values'], RELEASES[R]).strip()
+
     def env():
         print()
-        e = {R: {'values': CONFIG['values'], 'variables': RELEASES[R]}}
+        e = {R: {'values': VALUES, 'variables': RELEASES[R]}}
         print(yaml.safe_dump(e))
 
     if CMD == 'releases':
@@ -94,20 +96,20 @@ def main():
         sys.exit()
 
     if CMD == 'template':
-        H.template(R, RELEASES[R], CONFIG['values'])
+        H.template(R, RELEASES[R], VALUES)
         sys.exit()
 
     if CMD == 'debug':
         env()
-        H.debug(R, RELEASES[R], CONFIG['values'])
+        H.debug(R, RELEASES[R], VALUES)
         sys.exit()
 
     if CMD == 'diff':
-        H.diff(R, RELEASES[R], CONFIG['values'])
+        H.diff(R, RELEASES[R], VALUES)
         sys.exit()
 
     if CMD == 'deploy':
-        H.deploy(R, RELEASES[R], CONFIG['values'])
+        H.deploy(R, RELEASES[R], VALUES)
         sys.exit()
 
     if CMD == 'status':

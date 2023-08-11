@@ -9,7 +9,7 @@ config:
     command: helm 
     flags: '--kube-context {{ .Env.CLUSTER }} --namespace {{ .Env.NAMESPACE }}'
 
-values: t_values.yaml
+values: 't_values_{{ .Env.STAGE }}.yaml'
 
 variables:
     NAMESPACE: '{{ .Env.PRODUCT }}'
