@@ -27,6 +27,8 @@ def usage():
     print("  delete RELEASE   - delete")
     print("  version          - show version(s)")
     print()
+    print("https://github.com/mihaiush/timona/wiki")
+    print()
     sys.exit(2)
 
 
@@ -77,8 +79,6 @@ def main():
     if R and R not in RELEASES:
         raise RuntimeError('Unknown release: {}'.format(R))
 
-    VALUES = T.render(CONFIG['values'], RELEASES[R]).strip()
-
     def env():
         print()
         e = {R: {'values': VALUES, 'variables': RELEASES[R]}}
@@ -90,6 +90,8 @@ def main():
             print('  {}'.format(r))
         print()
         sys.exit()
+
+    VALUES = T.render(CONFIG['values'], RELEASES[R]).strip()
 
     if CMD == 'env':
         env()
