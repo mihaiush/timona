@@ -39,10 +39,14 @@ class Helm():
         with open('{}/{}'.format(self.tmp, self.values), 'w') as f:
             f.write(v)
 
-    def _run(self, env, args):
+    def _run(self, env, args, hide_stdout=False):
         c = self.tpl.render(self.cmd, env).strip()
         c = '{} {}'.format(c, args)
-        subprocess.run(shlex.split(c), check=True, text=True)
+        if hide_stdout:
+            stdout = subprocess.DEVNULL
+        else:
+            stdout = None
+        subprocess.run(shlex.split(c), check=True, text=True, stdout=stdout)
 
     def template(self, release, env, values):
         self._render_v(env, values)
@@ -72,12 +76,13 @@ class Helm():
         self._render_v(env, values)
         self._run(
             env,
-            'upgrade -i -f {}/{} {} {} {} .'
+            'upgrade --debug -i -f {}/{} {} {} {} .'
             .format(self.tmp,
                     self.values,
                     self.atomic,
                     self.timeout,
-                    release)
+                    release),
+            True
         )
 
     def status(self, release, env):
@@ -90,5 +95,6 @@ class Helm():
         self._run(
             env,
             'uninstall --debug {} {} {}'
-            .format(self.wait, self.timeout, release)
+            .format(self.wait, self.timeout, release),
+            True
         )
