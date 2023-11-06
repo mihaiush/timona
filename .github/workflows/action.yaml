@@ -44,11 +44,11 @@ jobs:
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_URL: ${{ github.server_url	}}
-        GITHUB_REPO: ${{ github.repository }}
-        GITHUB_TAG: ${{ github.ref_name }}      
+        #GITHUB_URL: ${{ github.server_url	}}
+        #GITHUB_REPO: ${{ github.repository }}
+        #GITHUB_TAG: ${{ github.ref_name }}      
       run: |
-        gh release create $GITHUB_TAG $(find dist -name '*.tar.gz') $(find dist -name '*.whl') --generate-notes --latest
+        gh release create $GITHUB_TAG $(find dist -name '*.tar.gz') $(find dist -name '*.whl') --generate-notes --latest --verify-tag
     - name: Publish
       env:
         PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
