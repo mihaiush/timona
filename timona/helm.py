@@ -43,10 +43,34 @@ class Helm():
         c = self.tpl.render(self.cmd, env).strip()
         c = '{} {}'.format(c, args)
         if hide_stdout:
-            stdout = subprocess.DEVNULL
+            p = subprocess.Popen(
+                shlex.split(c),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
+                encoding='utf-8', errors='ignore',
+                bufsize=0
+            )
+            prev_ln = ''
+            nl = True
+            for ln in iter(p.stderr.readline, ''):
+                ln = ln.rstrip()
+                if ln == prev_ln:
+                    print('.', end='', flush=True)
+                    nl = False
+                else:
+                    if not nl:
+                        print()
+                        nl = True
+                    print(ln)
+                prev_ln = ln
+            p.wait()
+            if p.returncode != 0:
+                raise subprocess.SubprocessError(
+                    "Command '{}' terminated with return code {}"
+                    .format(c, p.returncode)
+                )
         else:
-            stdout = None
-        subprocess.run(shlex.split(c), check=True, text=True, stdout=stdout)
+            subprocess.run(shlex.split(c), check=True, text=True)
 
     def template(self, release, env, values):
         self._render_v(env, values)
