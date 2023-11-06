@@ -1,0 +1,10 @@
+jobs:
+  test:
+      run: |
+        gh release list -L 1
+        RELEASE_MESSAGE=$(gh release list -L 1)
+        RELEASE_MESSAGE="**Full Changelog**: ${GITHUB_URL}/${GITHUB_REPO}/compare/${RELEASE_MESSAGE}...${GITHUB_TAG}"
+        echo ${RELEASE_MESSAGE}
+        
+        
+
