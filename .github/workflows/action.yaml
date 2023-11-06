@@ -53,7 +53,7 @@ jobs:
         echo $GITHUB_TAG >.message
         echo "" >>.message
         echo "${RELEASE_MESSAGE}" >>.message
-        hub release create -a $(find dist -name '*.tar.gz') -a $(find dist -name '*.whl') -F .message $GITHUB_TAG
+        gh release create $GITHUB_TAG $(find dist -name '*.tar.gz') $(find dist -name '*.whl') -F .message
     - name: Publish
       env:
         PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
