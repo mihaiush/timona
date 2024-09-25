@@ -54,7 +54,12 @@ class Helm():
             nl = True
             for ln in iter(p.stderr.readline, ''):
                 ln = ln.rstrip()
-                if ln == prev_ln:
+                if '[debug]' in ln:
+                    ln = ln.split(': ',1)[1]
+                    ln_short = ln.split('[debug]')[1]
+                else:
+                    ln_short = ln
+                if ln_short == prev_ln:
                     print('.', end='', flush=True)
                     nl = False
                 else:
@@ -62,7 +67,8 @@ class Helm():
                         print()
                         nl = True
                     print(ln)
-                prev_ln = ln
+                prev_ln = ln_short
+            p.stderr.close()
             p.wait()
             if p.returncode != 0:
                 raise subprocess.SubprocessError(
