@@ -55,7 +55,7 @@ class Helm():
             for ln in iter(p.stderr.readline, ''):
                 ln = ln.rstrip()
                 if '[debug]' in ln:
-                    ln = ln.split(': ',1)[1]
+                    ln = ln.split(': ', 1)[1]
                     ln_short = ln.split('[debug]')[1]
                 else:
                     ln_short = ln
