@@ -7,7 +7,7 @@ class Helm():
     def __init__(self, config, tpl, tmp):
         self.cmd = '{} {}'.format(config['command'], config['flags'])
         if 'wait' in config and config['wait']:
-            self.atomic = '--atomic'
+            self.atomic = '--rollback-on-failure'
             self.wait = '--wait'
         else:
             self.atomic = ''
@@ -106,7 +106,7 @@ class Helm():
         self._render_v(env, values)
         self._run(
             env,
-            'upgrade --debug -i -f {}/{} {} {} {} .'
+            'upgrade --history-max 2 --debug -i -f {}/{} {} {} {} .'
             .format(self.tmp,
                     self.values,
                     self.atomic,
