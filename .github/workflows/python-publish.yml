@@ -1,0 +1,14 @@
+name: Build and Publish Python Packages
+
+on: [push]
+
+jobs:
+  call-python-publish:
+    uses: mihaiush/ci/.github/workflows/python-publish.yml@main
+    with:
+      lint-pytest: true
+      lint-dependencies: |
+        pip install pyyaml requests jinja2 deepmerge
+        wget -O - https://raw.githubusercontent.com/jirutka/esh/master/esh >/usr/local/bin/esh
+        chmod +x /usr/local/bin/esh
+
